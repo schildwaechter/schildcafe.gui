@@ -132,13 +132,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
             // data is map[string]order
-            const order = data[currentOrderId];
+            // Swagger defines response as Map<String, []Order>
+            // We flatten the values to search for our order regardless of the grouping key
+            const allOrders = Object.values(data).flat();
+            const order = allOrders.find(o => o.orderId === currentOrderId);
 
             if (order) {
                 updateStatusUI(order);
             } else {
                 // Order might be lost or not found?
-                console.warn('Order not found in list');
+                console.warn(`Order ${currentOrderId} not found in list`);
             }
 
         } catch (error) {
