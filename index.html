@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SchildCafé</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    
+    <header>
+        <div class="logo-container">
+            <img src="assets/logo.png" alt="SchildCafé Logo" class="logo">
+            <h1>SchildCafé</h1>
+        </div>
+        <p class="tagline">Premium Coffee Experience</p>
+    </header>
+
+    <main>
+        <div id="app-container">
+            <!-- Order Form Section -->
+            <section id="order-section" class="card active">
+                <h2>Place Your Order</h2>
+                <p class="subtitle">Select your favorite blends</p>
+                
+                <div class="menu-grid">
+                    <div class="menu-item" data-product="Espresso">
+                        <div class="item-info">
+                            <h3>Espresso</h3>
+                            <span class="price">Pure Energy</span>
+                        </div>
+                        <div class="counter-control">
+                            <button class="btn-icon minus" aria-label="Decrease count">-</button>
+                            <span class="count">0</span>
+                            <button class="btn-icon plus" aria-label="Increase count">+</button>
+                        </div>
+                    </div>
+
+                    <div class="menu-item" data-product="Cappuccino">
+                        <div class="item-info">
+                            <h3>Cappuccino</h3>
+                            <span class="price">Classic Froth</span>
+                        </div>
+                        <div class="counter-control">
+                            <button class="btn-icon minus" aria-label="Decrease count">-</button>
+                            <span class="count">0</span>
+                            <button class="btn-icon plus" aria-label="Increase count">+</button>
+                        </div>
+                    </div>
+
+                    <div class="menu-item" data-product="Latte">
+                        <div class="item-info">
+                            <h3>Latte</h3>
+                            <span class="price">Silky Smooth</span>
+                        </div>
+                        <div class="counter-control">
+                            <button class="btn-icon minus" aria-label="Decrease count">-</button>
+                            <span class="count">0</span>
+                            <button class="btn-icon plus" aria-label="Increase count">+</button>
+                        </div>
+                    </div>
+
+                    <div class="menu-item" data-product="Americano">
+                        <div class="item-info">
+                            <h3>Americano</h3>
+                            <span class="price">Bold & Black</span>
+                        </div>
+                        <div class="counter-control">
+                            <button class="btn-icon minus" aria-label="Decrease count">-</button>
+                            <span class="count">0</span>
+                            <button class="btn-icon plus" aria-label="Increase count">+</button>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item" data-product="Mocha">
+                        <div class="item-info">
+                            <h3>Mocha</h3>
+                            <span class="price">Chocolate Delight</span>
+                        </div>
+                        <div class="counter-control">
+                            <button class="btn-icon minus" aria-label="Decrease count">-</button>
+                            <span class="count">0</span>
+                            <button class="btn-icon plus" aria-label="Increase count">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-area">
+                    <button id="submit-order-btn" class="btn-primary" disabled>
+                        Brew My Coffee
+                    </button>
+                </div>
+            </section>
+
+            <!-- Status Section -->
+            <section id="status-section" class="card hidden">
+                <div class="status-header">
+                    <h2>Order Status</h2>
+                    <span id="order-id-display" class="order-id">#Loading...</span>
+                </div>
+
+                <div class="status-visual">
+                    <div class="progress-ring">
+                        <svg class="progress-ring__circle" width="120" height="120">
+                            <circle class="progress-ring__background" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                            <circle class="progress-ring__bar" stroke="#d4a373" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                        </svg>
+                        <div class="progress-text">
+                            <span id="brewed-count">0</span>/<span id="total-count">0</span>
+                        </div>
+                    </div>
+                    <div class="status-message">
+                        <p id="current-status">Queued</p>
+                        <div class="loading-dots">
+                            <span>.</span><span>.</span><span>.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="order-items-list" class="order-summary-list">
+                    <!-- Items will be populated here -->
+                </div>
+
+                <div class="action-area">
+                    <button id="retrieve-btn" class="btn-primary hidden">
+                        Retrieve Order
+                    </button>
+                    <button id="new-order-btn" class="btn-secondary hidden">
+                        Place New Order
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 SchildCafé. Crafted with code.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
