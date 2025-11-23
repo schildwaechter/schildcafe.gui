@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.1.2] - 2025-11-23
+- Prevent config load hangs with timeout, clearer status messaging, and fallback activation.
+
 ## [0.1.1] - 2025-11-23
 - Make config loading resilient with cache-busting fetch and fallback messaging to guide serving `config.json`.
 
