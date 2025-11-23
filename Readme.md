@@ -1,6 +1,6 @@
 # Schildcafe GUI
 
-This repository contains AI generated GUIs for the Schildcafe application in it's branches.
+This is the implementation with Codex and GPT-5.1-Codex-Max starting from correct swagger spec.
 
 ## Prompt
 
@@ -12,3 +12,8 @@ The following prompt was given:
 > Add functionality to follow the order's status and to retrieve it once finished.
 > Use the logo in `assets/logo.png` as the logo of the application.
 > The API base URL and the list of available items should be loaded from a `config.json`.
+
+## Result
+
+![Screenshot](screenshot.png "Screenshot")
+

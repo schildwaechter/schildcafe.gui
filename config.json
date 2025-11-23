@@ -1,24 +1,24 @@
 {
-  "apiBaseUrl": "http://localhost:8080",
+  "apiBaseUrl": "http://localhost:1333",
   "items": [
     {
-      "id": "espresso",
-      "name": "Espresso",
+      "id": "ESPRESSO",
+      "name": "ESPRESSO",
       "description": "Rich and focused with a smooth crema."
     },
     {
-      "id": "cappuccino",
-      "name": "Cappuccino",
+      "id": "CAPPUCCINO",
+      "name": "CAPPUCCINO",
       "description": "Espresso balanced with velvety milk foam."
     },
     {
-      "id": "latte",
-      "name": "Caffè Latte",
+      "id": "COFFEE_WITH_MILK",
+      "name": "COFFEE_WITH_MILK",
       "description": "Mellow espresso with plenty of steamed milk."
     },
     {
-      "id": "filter",
-      "name": "Filter Brew",
+      "id": "COFFEE",
+      "name": "COFFEE",
       "description": "Clean cup highlighting origin character."
     }
   ],
