@@ -429,6 +429,13 @@
       setFeedback(document.getElementById('order-feedback'), 'Ready for a new order.', 'ghost');
     }
 
+    function enableUi() {
+      document.getElementById('submit-order').disabled = false;
+      document.getElementById('check-status').disabled = false;
+      document.getElementById('retrieve-order').disabled = false;
+      document.getElementById('refresh-board').disabled = false;
+    }
+
     // Guard against hanging fetches by racing with a timeout.
     async function loadConfig() {
       const status = document.getElementById('config-status');
@@ -464,14 +471,17 @@
           'config.json could not be fetched (check that you are serving the app and that config.json is reachable with correct JSON). Using a fallback menu for now.',
           'warn'
         );
+      } finally {
+        // Ensure the UI never stays disabled, even if fetching config failed in unexpected ways.
+        enableUi();
+        resetForm();
+        // Only try to refresh the board if we have at least a base URL.
+        if (state.config && state.config.apiBaseUrl) {
+          refreshBoard();
+        } else {
+          setFeedback(feedback, 'Missing apiBaseUrl. Please fix config.json.', 'error');
+        }
       }
-
-      document.getElementById('submit-order').disabled = false;
-      document.getElementById('check-status').disabled = false;
-      document.getElementById('retrieve-order').disabled = false;
-      document.getElementById('refresh-board').disabled = false;
-      resetForm();
-      refreshBoard();
     }
 
     async function submitOrder() {
