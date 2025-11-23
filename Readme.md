@@ -18,8 +18,28 @@ The order retrieval functionality does not work, it can't find the order in the 
 
 Additional prompt to understand the issue:
 
-> make sure to include the currentOrderId in the log message@app.js#L141-142
+> make sure to include the currentOrderId in the log message @app.js#L141-142
 
 The following direct prompt lead it to fix the issue
 
 > @app.js#L135-136 this is not the correct format of the response from the api
+
+## Revisions
+
+The following prompt was given to add dynamic loading of API url and products.
+
+> The API_BASE_URL and the list of available items should be loaded from a config.json
+
+## Result
+
+These are the final views.
+
+![Menu](screenshot-menu.png "Menu")
+![Status](screenshot-status.png "Status")
+![Retrieval](screenshot-retrieve.png "Retrieval")
+
+Run with e.g.
+
+```shell
+docker run -it --rm -d -p 8000:80 --name schildcafe-nginx-server -v .:/usr/share/nginx/html nginx
+```

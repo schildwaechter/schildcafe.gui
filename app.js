@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_BASE_URL = 'http://localhost:1333';
+    let API_BASE_URL = 'http://localhost:1333'; // Default, will be overwritten
 
     // State
     let orderItems = {}; // { "Espresso": 2, "Latte": 1 }
@@ -18,22 +18,66 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentStatusDisplay = document.getElementById('current-status');
     const progressRingBar = document.querySelector('.progress-ring__bar');
     const orderItemsList = document.getElementById('order-items-list');
+    const menuGrid = document.querySelector('.menu-grid');
 
-    // Initialize Menu Counters
-    document.querySelectorAll('.menu-item').forEach(item => {
-        const productName = item.dataset.product;
-        const minusBtn = item.querySelector('.minus');
-        const plusBtn = item.querySelector('.plus');
-        const countDisplay = item.querySelector('.count');
+    // Initialize
+    init();
 
-        minusBtn.addEventListener('click', () => updateCount(productName, -1, countDisplay));
-        plusBtn.addEventListener('click', () => updateCount(productName, 1, countDisplay));
-    });
+    async function init() {
+        try {
+            const configResponse = await fetch('config.json');
+            const config = await configResponse.json();
 
-    // Event Listeners
-    submitBtn.addEventListener('click', submitOrder);
-    retrieveBtn.addEventListener('click', retrieveOrder);
-    newOrderBtn.addEventListener('click', resetApp);
+            if (config.apiBaseUrl) {
+                API_BASE_URL = config.apiBaseUrl;
+            }
+
+            if (config.products) {
+                renderMenu(config.products);
+            }
+        } catch (error) {
+            console.error('Failed to load config:', error);
+            // Fallback or alert? For now, we might just log it.
+            // If config fails, we might have an empty menu.
+        }
+
+        // Event Listeners
+        submitBtn.addEventListener('click', submitOrder);
+        retrieveBtn.addEventListener('click', retrieveOrder);
+        newOrderBtn.addEventListener('click', resetApp);
+    }
+
+    function renderMenu(products) {
+        menuGrid.innerHTML = ''; // Clear existing items if any
+
+        products.forEach(product => {
+            const menuItem = document.createElement('div');
+            menuItem.className = 'menu-item';
+            menuItem.dataset.product = product.id;
+
+            menuItem.innerHTML = `
+                <div class="item-info">
+                    <h3>${product.name}</h3>
+                    <span class="price">${product.description}</span>
+                </div>
+                <div class="counter-control">
+                    <button class="btn-icon minus" aria-label="Decrease count">-</button>
+                    <span class="count">0</span>
+                    <button class="btn-icon plus" aria-label="Increase count">+</button>
+                </div>
+            `;
+
+            menuGrid.appendChild(menuItem);
+
+            // Attach listeners for this item
+            const minusBtn = menuItem.querySelector('.minus');
+            const plusBtn = menuItem.querySelector('.plus');
+            const countDisplay = menuItem.querySelector('.count');
+
+            minusBtn.addEventListener('click', () => updateCount(product.id, -1, countDisplay));
+            plusBtn.addEventListener('click', () => updateCount(product.id, 1, countDisplay));
+        });
+    }
 
     // Functions
     function updateCount(product, change, displayElement) {

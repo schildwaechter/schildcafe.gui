@@ -1,0 +1,30 @@
+{
+    "apiBaseUrl": "http://localhost:1333",
+    "products": [
+        {
+            "id": "Espresso",
+            "name": "Espresso",
+            "description": "Pure Energy"
+        },
+        {
+            "id": "Cappuccino",
+            "name": "Cappuccino",
+            "description": "Classic Froth"
+        },
+        {
+            "id": "Latte",
+            "name": "Latte",
+            "description": "Silky Smooth"
+        },
+        {
+            "id": "Americano",
+            "name": "Americano",
+            "description": "Bold & Black"
+        },
+        {
+            "id": "Mocha",
+            "name": "Mocha",
+            "description": "Chocolate Delight"
+        }
+    ]
+}
