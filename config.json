@@ -1,0 +1,26 @@
+{
+  "apiBaseUrl": "http://localhost:8080",
+  "items": [
+    {
+      "id": "espresso",
+      "name": "Espresso",
+      "description": "Rich and focused with a smooth crema."
+    },
+    {
+      "id": "cappuccino",
+      "name": "Cappuccino",
+      "description": "Espresso balanced with velvety milk foam."
+    },
+    {
+      "id": "latte",
+      "name": "Caffè Latte",
+      "description": "Mellow espresso with plenty of steamed milk."
+    },
+    {
+      "id": "filter",
+      "name": "Filter Brew",
+      "description": "Clean cup highlighting origin character."
+    }
+  ],
+  "pollIntervalMs": 4500
+}
