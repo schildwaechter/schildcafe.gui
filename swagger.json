@@ -1,32 +1,19 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "API for managing coffee orders in the SchildCafé system",
-        "title": "SchildCafé Servitør API",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "name": "API Support",
-            "email": "support@schildwaechter.de"
-        },
+        "title": "SchildCafé Servitør",
+        "contact": {},
         "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        },
-        "version": "1.0"
+            "name": "Apache-2.0"
+        }
     },
-    "host": "localhost:1333",
-    "basePath": "/",
     "paths": {
         "/": {
             "get": {
-                "description": "Returns a welcome message",
                 "produces": [
                     "text/plain"
                 ],
-                "tags": [
-                    "General"
-                ],
-                "summary": "Welcome endpoint",
+                "summary": "Root endpoint",
                 "responses": {
                     "200": {
                         "description": "Welcome to the SchildCafé!",
@@ -39,22 +26,13 @@
         },
         "/healthcheck": {
             "get": {
-                "description": "Performs a health check. Returns OK if the system is healthy.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "General"
-                ],
-                "summary": "Health check endpoint",
+                "description": "If all is fine, this will tell you.",
+                "summary": "Perform a healthcheck",
                 "responses": {
                     "200": {
-                        "description": "Health status",
+                        "description": "Ok",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/main.swaggResponse"
                         }
                     }
                 }
@@ -62,14 +40,10 @@
         },
         "/metrics": {
             "get": {
-                "description": "Returns system metrics in Prometheus format",
                 "produces": [
                     "text/plain"
                 ],
-                "tags": [
-                    "Metrics"
-                ],
-                "summary": "Prometheus metrics endpoint",
+                "summary": "Get Prometheus metrics",
                 "responses": {
                     "200": {
                         "description": "Prometheus metrics",
@@ -82,25 +56,15 @@
         },
         "/order-list": {
             "get": {
-                "description": "Returns a list of all orders in the system",
                 "produces": [
                     "application/json"
                 ],
-                "tags": [
-                    "Orders"
-                ],
-                "summary": "List all orders",
+                "summary": "Get list of all orders",
                 "responses": {
                     "200": {
                         "description": "List of orders",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/main.order"
-                                }
-                            }
+                            "$ref": "#/definitions/main.orderListResponse"
                         }
                     }
                 }
@@ -108,14 +72,7 @@
         },
         "/retrieve-order/{ID}": {
             "get": {
-                "description": "Retrieves and marks an order as delivered if it's ready",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Orders"
-                ],
-                "summary": "Retrieve an order by ID",
+                "summary": "Retrieve an order",
                 "parameters": [
                     {
                         "type": "string",
@@ -127,7 +84,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Order details",
+                        "description": "Order",
                         "schema": {
                             "$ref": "#/definitions/main.order"
                         }
@@ -135,28 +92,19 @@
                     "404": {
                         "description": "Order not found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/main.swaggResponse"
                         }
                     },
                     "410": {
                         "description": "Order already delivered",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/main.swaggResponse"
                         }
                     },
                     "503": {
                         "description": "Order not ready",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/main.swaggResponse"
                         }
                     }
                 }
@@ -164,21 +112,14 @@
         },
         "/submit-order": {
             "post": {
-                "description": "Creates a new coffee order in the system",
                 "consumes": [
                     "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Orders"
                 ],
                 "summary": "Submit a new order",
                 "parameters": [
                     {
-                        "description": "Order submission details",
-                        "name": "order",
+                        "description": "Order to submit",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -193,22 +134,10 @@
                             "type": "string"
                         }
                     },
-                    "400": {
-                        "description": "Bad request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
                     "500": {
-                        "description": "Internal server error",
+                        "description": "Unable to accept order",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/main.swaggResponse"
                         }
                     }
                 }
@@ -220,15 +149,14 @@
             "type": "object",
             "properties": {
                 "orderBrewed": {
-                    "description": "Number of coffee items that have been brewed",
+                    "description": "Number of coffees brewed so far",
                     "type": "integer"
                 },
                 "orderId": {
-                    "description": "Order ID (UUID)\nexample: 550e8400-e29b-41d4-a716-446655440000",
                     "type": "string"
                 },
                 "orderReady": {
-                    "description": "Timestamp when the order was ready (null if not ready)",
+                    "description": "Timestamp when the order was ready (0 before that)",
                     "type": "string"
                 },
                 "orderReceived": {
@@ -236,11 +164,11 @@
                     "type": "string"
                 },
                 "orderRetrieved": {
-                    "description": "Timestamp when the order was retrieved (null if not retrieved)",
+                    "description": "Timestamp when the order was retrieved (0 before that)",
                     "type": "string"
                 },
                 "orderSize": {
-                    "description": "Total number of coffee items in the order",
+                    "description": "Total number of coffees in the order",
                     "type": "integer"
                 }
             }
@@ -249,12 +177,23 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "description": "Number of this product to order\nexample: 2",
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 2
                 },
                 "product": {
-                    "description": "Coffee product name\nexample: Espresso",
-                    "type": "string"
+                    "type": "string",
+                    "example": "espresso"
+                }
+            }
+        },
+        "main.orderListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.order"
+                    }
                 }
             }
         },
@@ -262,15 +201,29 @@
             "type": "object",
             "properties": {
                 "coffeeOrder": {
-                    "description": "List of coffee items to order",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/main.orderEntry"
                     }
                 },
                 "orderId": {
-                    "description": "Order ID (optional, will be generated if not provided)\nexample: customer-order-123",
+                    "description": "(optional) orderID",
                     "type": "string"
+                }
+            }
+        },
+        "main.swaggResponse": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "description": "in:body",
+                    "type": "object",
+                    "properties": {
+                        "message": {
+                            "description": "Detailed message",
+                            "type": "string"
+                        }
+                    }
                 }
             }
         }
