@@ -431,24 +431,36 @@
 
     async function loadConfig() {
       const status = document.getElementById('config-status');
+      const fallback = {
+        apiBaseUrl: 'http://localhost:1333',
+        items: ['Espresso', 'Cappuccino', 'Latte']
+      };
       try {
-        const res = await fetch('config.json');
+        const res = await fetch('config.json', { cache: 'no-store' });
         if (!res.ok) { throw new Error('Cannot load config.json'); }
         const data = await res.json();
         state.config = data;
         state.productOptions = data.items || [];
         status.textContent = 'Menu loaded from config';
-        document.getElementById('submit-order').disabled = false;
-        document.getElementById('check-status').disabled = false;
-        document.getElementById('retrieve-order').disabled = false;
-        document.getElementById('refresh-board').disabled = false;
-        resetForm();
-        refreshBoard();
       } catch (err) {
-        status.textContent = 'Config failed to load';
-        setFeedback(document.getElementById('order-feedback'), 'Load config.json to continue.', 'error');
         console.error(err);
+        // Provide a fallback so the UI remains usable while signaling the problem.
+        state.config = fallback;
+        state.productOptions = fallback.items;
+        status.textContent = 'Config failed to load – using fallback';
+        setFeedback(
+          document.getElementById('order-feedback'),
+          'config.json could not be fetched. Serve the app via http(s) and ensure config.json is reachable. Using a fallback menu for now.',
+          'warn'
+        );
       }
+
+      document.getElementById('submit-order').disabled = false;
+      document.getElementById('check-status').disabled = false;
+      document.getElementById('retrieve-order').disabled = false;
+      document.getElementById('refresh-board').disabled = false;
+      resetForm();
+      refreshBoard();
     }
 
     async function submitOrder() {
