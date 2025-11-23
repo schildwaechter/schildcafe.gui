@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SchildCafé - Kitchen Board</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="background-overlay"></div>
+
+    <header>
+        <div class="logo-container">
+            <img src="assets/logo.png" alt="SchildCafé Logo" class="logo">
+            <h1>Kitchen Board</h1>
+        </div>
+        <p class="tagline">Order Status Monitor</p>
+    </header>
+
+    <main class="kitchen-main">
+        <div class="kitchen-board">
+            <!-- Received Column -->
+            <div class="board-column" id="col-received">
+                <div class="column-header">
+                    <h2>Received</h2>
+                    <span class="count-badge" id="count-received">0</span>
+                </div>
+                <div class="orders-container" id="list-received">
+                    <!-- Orders will be populated here -->
+                </div>
+            </div>
+
+            <!-- In Preparation Column -->
+            <div class="board-column" id="col-prep">
+                <div class="column-header">
+                    <h2>In Preparation</h2>
+                    <span class="count-badge" id="count-prep">0</span>
+                </div>
+                <div class="orders-container" id="list-prep">
+                    <!-- Orders will be populated here -->
+                </div>
+            </div>
+
+            <!-- Ready Column -->
+            <div class="board-column" id="col-ready">
+                <div class="column-header">
+                    <h2>Ready</h2>
+                    <span class="count-badge" id="count-ready">0</span>
+                </div>
+                <div class="orders-container" id="list-ready">
+                    <!-- Orders will be populated here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 SchildCafé. Staff Only.</p>
+    </footer>
+
+    <script src="kitchen.js"></script>
+</body>
+
+</html>

@@ -43,3 +43,15 @@ Run with e.g.
 ```shell
 docker run -it --rm -d -p 8000:80 --name schildcafe-nginx-server -v .:/usr/share/nginx/html nginx
 ```
+
+## Extension
+
+Creating a dashboard for staff
+
+> Create a second SPA, reusing the existing assets and design.
+> This should be a "kitchen board" that shows the status of the cafe,
+> i.e. orders received, in preperation and progress.
+
+The final view
+
+![Kitchen Board](screenshot-kitchen.png "Kitchen Board")
