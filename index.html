@@ -580,8 +580,15 @@
       if (Array.isArray(data)) { return data; }
       if (data && Array.isArray(data.orders)) { return data.orders; }
       if (data && typeof data === 'object') {
-        const values = Object.values(data).flat();
-        return values;
+        const collected = [];
+        Object.entries(data).forEach(([key, value]) => {
+          if (Array.isArray(value)) {
+            value.forEach((v) => collected.push({ orderId: v.orderId || key, ...v }));
+          } else if (value && typeof value === 'object') {
+            collected.push({ orderId: value.orderId || key, ...value });
+          }
+        });
+        return collected;
       }
       return [];
     }

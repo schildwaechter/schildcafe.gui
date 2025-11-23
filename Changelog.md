@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.1.5] - 2025-11-23
+- Improve order status lookup by deriving `orderId` from keyed order-list responses so tracking matches the kitchen board.
+
 ## [0.1.4] - 2025-11-23
 - Fix script parse error caused by an escaped slash in the API base URL normalization.
 
