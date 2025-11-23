@@ -11,3 +11,4 @@ The following prompt was given:
 > Add functionality to submit new orders with multiple products.
 > Add functionality to follow the order's status and to retrieve it once finished.
 > Use the logo in `assets/logo.png` as the logo of the application.
+> The API base URL and the list of available items should be loaded from a `config.json`.
