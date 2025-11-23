@@ -1,0 +1,29 @@
+{
+  "apiBaseUrl": "http://localhost:1333",
+  "availableItems": [
+    {
+      "name": "Espresso",
+      "description": "Strong, concentrated coffee"
+    },
+    {
+      "name": "Cappuccino",
+      "description": "Espresso with steamed milk foam"
+    },
+    {
+      "name": "Latte",
+      "description": "Espresso with steamed milk"
+    },
+    {
+      "name": "Americano",
+      "description": "Espresso with hot water"
+    },
+    {
+      "name": "Macchiato",
+      "description": "Espresso with a dollop of milk foam"
+    },
+    {
+      "name": "Mocha",
+      "description": "Espresso with chocolate and steamed milk"
+    }
+  ]
+}

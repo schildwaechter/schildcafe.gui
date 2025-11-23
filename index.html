@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schildcafe - Coffee Order System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="assets/logo.png" alt="Schildcafe Logo" class="logo">
+            <h1>Schildcafe</h1>
+            <p class="subtitle">Order your favorite coffee</p>
+        </header>
+
+        <main>
+            <!-- Order Submission Section -->
+            <section id="order-section" class="card">
+                <h2>Place New Order</h2>
+                <form id="order-form">
+                    <div id="order-items" class="order-items">
+                        <!-- Order items will be dynamically added here -->
+                    </div>
+                    <button type="button" id="add-item-btn" class="btn btn-secondary">+ Add Item</button>
+                    <div class="form-actions">
+                        <button type="submit" id="submit-order-btn" class="btn btn-primary">Submit Order</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Active Orders Section -->
+            <section id="active-orders-section" class="card">
+                <h2>Active Orders</h2>
+                <div id="active-orders" class="orders-list">
+                    <!-- Active orders will be displayed here -->
+                </div>
+            </section>
+
+            <!-- Order Tracking Section -->
+            <section id="track-order-section" class="card">
+                <h2>Track Order</h2>
+                <div class="track-order-form">
+                    <input type="text" id="track-order-id" placeholder="Enter Order ID" class="input">
+                    <button type="button" id="track-order-btn" class="btn btn-primary">Track</button>
+                </div>
+                <div id="tracked-order" class="tracked-order-details">
+                    <!-- Tracked order details will be displayed here -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Notification Toast -->
+        <div id="toast" class="toast"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
