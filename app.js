@@ -4,6 +4,48 @@ let availableItems = [];
 let apiBaseUrl = '';
 let activeOrders = new Map(); // Map of orderId -> order object
 let pollingIntervals = new Map(); // Map of orderId -> interval ID
+let globalRefreshInterval = null; // Global interval for refreshing all orders
+
+// Helper function to parse order list response
+// Handles various response formats from the API
+function parseOrderListResponse(data) {
+    // Case 1: Direct array
+    if (Array.isArray(data)) {
+        return data;
+    }
+
+    // Case 2: Object with 'orders' property
+    if (data.orders && Array.isArray(data.orders)) {
+        return data.orders;
+    }
+
+    // Case 3: Object with 'data' property containing array
+    if (data.data && Array.isArray(data.data)) {
+        return data.data;
+    }
+
+    // Case 4: Object with 'items' property containing array
+    if (data.items && Array.isArray(data.items)) {
+        return data.items;
+    }
+
+    // Case 5: Object with any property containing an array (for additionalProperties pattern)
+    if (typeof data === 'object' && data !== null) {
+        const arrayValue = Object.values(data).find(val => Array.isArray(val));
+        if (arrayValue) {
+            return arrayValue;
+        }
+    }
+
+    // If we can't parse it, log for debugging
+    console.warn('Unable to parse order list response. Received:', data);
+    console.warn('Response type:', typeof data);
+    if (typeof data === 'object' && data !== null) {
+        console.warn('Response keys:', Object.keys(data));
+    }
+
+    return [];
+}
 
 // Initialize the application
 async function init() {
@@ -25,6 +67,9 @@ async function init() {
 
         // Load active orders
         loadActiveOrders();
+
+        // Start global refresh interval (refresh all orders every 5 seconds)
+        startGlobalRefresh();
     } catch (error) {
         showToast('Failed to initialize application: ' + error.message, 'error');
         console.error('Initialization error:', error);
@@ -118,16 +163,38 @@ async function handleSubmitOrder(e) {
             throw new Error(errorData.error || `HTTP ${response.status}`);
         }
 
-        const orderId = await response.text();
+        const orderId = (await response.text()).trim();
         showToast(`Order submitted successfully! Order ID: ${orderId}`, 'success');
 
         // Reset form
         document.getElementById('order-items').innerHTML = '';
         addOrderItem();
 
-        // Load the new order and start tracking
-        await loadOrderById(orderId);
+        // Create a placeholder order object immediately so it shows up in the UI
+        const placeholderOrder = {
+            orderId: orderId,
+            orderReceived: new Date().toISOString(),
+            orderReady: null,
+            orderRetrieved: null,
+            orderSize: coffeeOrder.reduce((sum, item) => sum + item.count, 0),
+            orderBrewed: 0
+        };
+
+        // Add to active orders immediately
+        activeOrders.set(orderId, placeholderOrder);
+        updateActiveOrdersDisplay();
+
+        // Start polling immediately
         startOrderPolling(orderId);
+
+        // Try to load full order details (non-blocking)
+        // This will update the order with real data from the API
+        // loadOrderById will call loadActiveOrders if needed, so we don't need to call it separately
+        loadOrderById(orderId).catch(err => {
+            console.error('Failed to load order details:', err);
+            // If loadOrderById fails, try loading from order-list as fallback
+            setTimeout(() => loadActiveOrders(), 500);
+        });
 
     } catch (error) {
         showToast('Failed to submit order: ' + error.message, 'error');
@@ -140,6 +207,9 @@ async function handleSubmitOrder(e) {
 
 // Load order by ID
 async function loadOrderById(orderId) {
+    // Normalize orderId (trim whitespace)
+    orderId = String(orderId).trim();
+
     try {
         const response = await fetch(`${apiBaseUrl}/retrieve-order/${orderId}`);
 
@@ -151,7 +221,11 @@ async function loadOrderById(orderId) {
         if (response.status === 410) {
             // Order already delivered
             const order = await response.json();
-            activeOrders.set(orderId, order);
+            // Normalize orderId from response
+            if (order.orderId) {
+                order.orderId = String(order.orderId).trim();
+            }
+            activeOrders.set(order.orderId || orderId, order);
             updateActiveOrdersDisplay();
             showToast('Order has already been retrieved', 'warning');
             return order;
@@ -161,7 +235,8 @@ async function loadOrderById(orderId) {
             // Order not ready yet - this is expected, we'll track it
             // Try to get order info from order-list instead
             await loadActiveOrders();
-            return null;
+            // Return the order from activeOrders if it was found, otherwise return placeholder
+            return activeOrders.get(orderId) || null;
         }
 
         if (!response.ok) {
@@ -169,7 +244,11 @@ async function loadOrderById(orderId) {
         }
 
         const order = await response.json();
-        activeOrders.set(orderId, order);
+        // Normalize orderId from response
+        if (order.orderId) {
+            order.orderId = String(order.orderId).trim();
+        }
+        activeOrders.set(order.orderId || orderId, order);
         updateActiveOrdersDisplay();
         return order;
 
@@ -265,6 +344,9 @@ function displayTrackedOrder(order) {
 
 // Retrieve an order (mark as delivered)
 async function retrieveOrder(orderId) {
+    // Normalize orderId (trim whitespace)
+    orderId = String(orderId).trim();
+
     try {
         const response = await fetch(`${apiBaseUrl}/retrieve-order/${orderId}`);
 
@@ -289,7 +371,11 @@ async function retrieveOrder(orderId) {
         }
 
         const order = await response.json();
-        activeOrders.set(orderId, order);
+        // Normalize orderId from response
+        if (order.orderId) {
+            order.orderId = String(order.orderId).trim();
+        }
+        activeOrders.set(order.orderId || orderId, order);
         updateActiveOrdersDisplay();
 
         // Update tracked order if it's the same one
@@ -317,30 +403,53 @@ async function loadActiveOrders() {
         }
 
         const data = await response.json();
-        // Handle different response formats: { orders: [...] } or array directly
-        let orders = [];
-        if (Array.isArray(data)) {
-            orders = data;
-        } else if (data.orders && Array.isArray(data.orders)) {
-            orders = data.orders;
-        } else if (typeof data === 'object') {
-            // Handle case where orders might be in additionalProperties
-            orders = Object.values(data).find(val => Array.isArray(val)) || [];
+        console.log('Order list API response:', data);
+
+        // Parse the response using helper function
+        const orders = parseOrderListResponse(data);
+        console.log('Parsed orders:', orders);
+
+        // Validate orders structure
+        if (!Array.isArray(orders)) {
+            console.error('Failed to parse orders as array. Response:', data);
+            return;
         }
 
         // Update active orders map
         orders.forEach(order => {
-            activeOrders.set(order.orderId, order);
-            // Start polling if not already polling
-            if (!pollingIntervals.has(order.orderId) && !order.orderRetrieved) {
-                startOrderPolling(order.orderId);
+            if (order && order.orderId) {
+                // Trim orderId to ensure consistent matching
+                const trimmedOrderId = String(order.orderId).trim();
+                order.orderId = trimmedOrderId;
+                activeOrders.set(trimmedOrderId, order);
+
+                // Start polling if not already polling
+                if (!pollingIntervals.has(trimmedOrderId) && !order.orderRetrieved) {
+                    startOrderPolling(trimmedOrderId);
+                }
+            } else {
+                console.warn('Invalid order structure:', order);
             }
         });
 
+        // Always update display to reflect latest order states
         updateActiveOrdersDisplay();
+
+        // Also update tracked order display if there's a tracked order
+        const trackedOrderId = document.getElementById('track-order-id').value.trim();
+        if (trackedOrderId) {
+            const trackedOrder = activeOrders.get(trackedOrderId);
+            if (trackedOrder) {
+                displayTrackedOrder(trackedOrder);
+            }
+        }
 
     } catch (error) {
         console.error('Load active orders error:', error);
+        console.error('Error details:', {
+            message: error.message,
+            stack: error.stack
+        });
         // Don't show toast for this as it's called automatically
     }
 }
@@ -406,6 +515,9 @@ function updateActiveOrdersDisplay() {
 
 // Start polling for order status updates
 function startOrderPolling(orderId) {
+    // Normalize orderId (trim whitespace)
+    orderId = String(orderId).trim();
+
     // Don't start polling if already polling or if order is retrieved
     if (pollingIntervals.has(orderId)) {
         return;
@@ -429,19 +541,18 @@ function startOrderPolling(orderId) {
             const response = await fetch(`${apiBaseUrl}/order-list`);
             if (response.ok) {
                 const data = await response.json();
-                // Handle different response formats
-                let orders = [];
-                if (Array.isArray(data)) {
-                    orders = data;
-                } else if (data.orders && Array.isArray(data.orders)) {
-                    orders = data.orders;
-                } else if (typeof data === 'object') {
-                    orders = Object.values(data).find(val => Array.isArray(val)) || [];
-                }
-                const updatedOrder = orders.find(o => o.orderId === orderId);
+                const orders = parseOrderListResponse(data);
+                // Normalize orderId for comparison
+                const normalizedOrderId = String(orderId).trim();
+                const updatedOrder = orders.find(o => {
+                    if (!o || !o.orderId) return false;
+                    return String(o.orderId).trim() === normalizedOrderId;
+                });
 
                 if (updatedOrder) {
-                    activeOrders.set(orderId, updatedOrder);
+                    // Normalize orderId in the order object
+                    updatedOrder.orderId = String(updatedOrder.orderId).trim();
+                    activeOrders.set(updatedOrder.orderId, updatedOrder);
                     updateActiveOrdersDisplay();
 
                     // Update tracked order if it's the same one
@@ -470,6 +581,27 @@ function stopOrderPolling(orderId) {
     if (interval) {
         clearInterval(interval);
         pollingIntervals.delete(orderId);
+    }
+}
+
+// Start global refresh interval to periodically update all orders
+function startGlobalRefresh() {
+    // Clear any existing global refresh interval
+    if (globalRefreshInterval) {
+        clearInterval(globalRefreshInterval);
+    }
+
+    // Refresh all orders every 5 seconds
+    globalRefreshInterval = setInterval(() => {
+        loadActiveOrders();
+    }, 5000);
+}
+
+// Stop global refresh interval
+function stopGlobalRefresh() {
+    if (globalRefreshInterval) {
+        clearInterval(globalRefreshInterval);
+        globalRefreshInterval = null;
     }
 }
 
