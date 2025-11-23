@@ -371,7 +371,7 @@
 
     function buildUrl(path) {
       if (!state.config) { throw new Error('Config not loaded'); }
-      const base = state.config.apiBaseUrl.replace(/\\/+$/, '');
+      const base = state.config.apiBaseUrl.replace(/\/+$/, '');
       const cleanPath = path.startsWith('/') ? path : '/' + path;
       return base + cleanPath;
     }

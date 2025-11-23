@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.1.4] - 2025-11-23
+- Fix script parse error caused by an escaped slash in the API base URL normalization.
+
 ## [0.1.3] - 2025-11-23
 - Ensure UI enables even if config fetch misbehaves by moving button enabling to a guaranteed path.
 
