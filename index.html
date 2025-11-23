@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schildcafe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+
+  <header class="hero">
+    <div class="brand">
+      <div class="logo-wrap">
+        <img src="assets/logo.png" alt="Schildcafe logo" class="logo">
+      </div>
+      <div class="brand-copy">
+        <p class="eyebrow">Schildcafe Servitor</p>
+        <h1>Craft coffee, coordinated.</h1>
+        <p class="lede">Submit multi-drink orders, follow your queue in real-time, and retrieve the moment it is ready.</p>
+        <div class="badges">
+          <span class="badge" id="api-base">Loading config…</span>
+          <span class="badge soft" id="item-count">0 menu items</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-cta">
+      <div class="cta-card">
+        <p class="cta-title">Brew queue status</p>
+        <p class="cta-value" id="hero-status">Waiting for first order</p>
+        <p class="cta-sub" id="hero-detail">Track an order to see live progress.</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="panel panel-large">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Create order</p>
+          <h2>Build your round</h2>
+        </div>
+        <button class="ghost" id="add-line">+ Add item</button>
+      </div>
+      <form id="order-form" class="stack">
+        <label class="field">
+          <span>Custom order ID (optional)</span>
+          <input id="order-id" type="text" placeholder="e.g. team-morning-round">
+        </label>
+
+        <div id="order-lines" class="stack"></div>
+
+        <div class="summary">
+          <div>
+            <p class="eyebrow">Order size</p>
+            <p class="total"><span id="total-count">0</span> cup(s)</p>
+          </div>
+          <div class="actions">
+            <span id="order-alert" class="hint"></span>
+            <button type="submit" class="primary">Submit order</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Follow order</p>
+          <h2>Live status</h2>
+        </div>
+      </div>
+      <form id="track-form" class="stack tight">
+        <label class="field">
+          <span>Order ID</span>
+          <div class="inline">
+            <input id="track-id" type="text" placeholder="Paste an order ID">
+            <button class="secondary" type="submit">Follow</button>
+          </div>
+        </label>
+      </form>
+      <div class="status-card">
+        <div class="status-row">
+          <span class="status-pill" id="status-badge">Not tracking</span>
+          <button id="retrieve-btn" class="ghost" disabled>Retrieve order</button>
+        </div>
+        <p class="status-title" id="status-text">Select an order to begin tracking.</p>
+        <p class="status-sub" id="status-subtext">We will poll the Servitor and update automatically.</p>
+        <div class="progress">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <dl class="meta" id="status-meta"></dl>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Menu</p>
+          <h2>Available drinks</h2>
+        </div>
+      </div>
+      <div id="menu-grid" class="menu-grid"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
