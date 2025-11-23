@@ -1,0 +1,14 @@
+{
+  "apiBaseUrl": "http://localhost:1333",
+  "items": [
+    "Espresso",
+    "Double Espresso",
+    "Flat White",
+    "Cappuccino",
+    "Latte",
+    "Americano",
+    "Mocha",
+    "Cortado",
+    "Filter Coffee"
+  ]
+}

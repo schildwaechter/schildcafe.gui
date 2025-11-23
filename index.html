@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schildcafe · Servitør</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #6b7280;
+      --accent: #f97316;
+      --accent-strong: #ea580c;
+      --surface: #0b1221;
+      --card: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.08);
+      --glow: rgba(249, 115, 22, 0.35);
+      --success: #22c55e;
+      --warn: #f59e0b;
+      --error: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(249, 115, 22, 0.18), transparent 30%),
+                  radial-gradient(circle at 80% 0%, rgba(56, 189, 248, 0.2), transparent 30%),
+                  #0a0f1a;
+      color: #e5e7eb;
+      font-family: 'Manrope', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+    }
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+    header img {
+      width: 56px;
+      height: 56px;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,0.4));
+    }
+    header .title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    header h1 {
+      font-family: 'Playfair Display', 'Times New Roman', serif;
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0.3px;
+      color: #fff;
+    }
+    header span {
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .hero {
+      background: linear-gradient(135deg, rgba(17, 24, 39, 0.8), rgba(15, 23, 42, 0.8));
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.02);
+      padding: 28px;
+      border-radius: 16px;
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      backdrop-filter: blur(6px);
+    }
+    .hero h2 {
+      font-size: 24px;
+      margin: 0 0 8px;
+      color: #fff;
+    }
+    .hero p {
+      margin: 0;
+      color: #cbd5e1;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(249, 115, 22, 0.1);
+      color: #f8fafc;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.1);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 20px 70px rgba(0,0,0,0.35);
+      backdrop-filter: blur(6px);
+    }
+    .card h3 {
+      margin: 0 0 12px;
+      color: #fff;
+      font-size: 18px;
+    }
+    label {
+      display: block;
+      color: #cbd5e1;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    input, select {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 12px 12px;
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.16);
+    }
+    .product-row {
+      display: grid;
+      grid-template-columns: 1fr 120px 42px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .product-row button {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.12s ease, border 0.2s, background 0.2s;
+    }
+    .product-row button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,0.18);
+    }
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .section-heading span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 13px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 15px;
+      transition: transform 0.12s ease, box-shadow 0.2s, background 0.2s;
+      color: #0b0f1a;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #fff;
+      box-shadow: 0 14px 40px rgba(249, 115, 22, 0.32);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      border: 1px solid var(--border);
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .inline-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .status {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-size: 14px;
+      color: #e5e7eb;
+      background: rgba(255,255,255,0.04);
+    }
+    .status.success { border-color: rgba(34,197,94,0.4); color: #bbf7d0; }
+    .status.error { border-color: rgba(239,68,68,0.5); color: #fecdd3; }
+    .status.warn { border-color: rgba(245,158,11,0.5); color: #fde68a; }
+    .timeline {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      color: #e5e7eb;
+      font-size: 13px;
+    }
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .order-card {
+      display: grid;
+      gap: 12px;
+    }
+    .board {
+      margin-top: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .board h4 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: #fff;
+    }
+    .board .list {
+      display: grid;
+      gap: 10px;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+    }
+    .row .id {
+      font-weight: 600;
+      color: #fff;
+    }
+    .row .meta {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .ghost {
+      opacity: 0.4;
+    }
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent);
+      margin: 12px 0;
+    }
+    @media (max-width: 960px) {
+      .grid { grid-template-columns: 1fr; }
+      .hero { flex-direction: column; }
+      .product-row { grid-template-columns: 1fr 120px 38px; }
+    }
+    @media (max-width: 520px) {
+      .product-row { grid-template-columns: 1fr 100px 32px; }
+      .actions { flex-direction: column; }
+      .inline-actions { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <img src="assets/logo.png" alt="Schildcafe logo">
+      <div class="title">
+        <h1>Schildcafe</h1>
+        <span>Servitør companion · Craft orders, track progress, retrieve when ready</span>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <h2>Brew delightful orders with ease</h2>
+        <p>Compose multi-product coffee orders, follow their status in real time, and collect them the moment they are ready.</p>
+      </div>
+      <div class="pill">Live API linked • Config driven menu</div>
+    </section>
+
+    <div class="grid">
+      <section class="card order-card">
+        <div class="section-heading">
+          <h3>New order</h3>
+          <span id="config-status">Loading config…</span>
+        </div>
+        <div>
+          <label for="order-name">Optional order name / ID</label>
+          <input id="order-name" type="text" placeholder="e.g. morning-rush-17">
+        </div>
+        <div>
+          <div class="section-heading">
+            <label>Products</label>
+            <button id="add-product" class="btn btn-secondary" type="button">Add item</button>
+          </div>
+          <div id="product-list"></div>
+        </div>
+        <div class="actions">
+          <button id="submit-order" class="btn btn-primary" type="button" disabled>Submit order</button>
+          <button id="reset-form" class="btn btn-secondary" type="button">Reset</button>
+        </div>
+        <div id="order-feedback" class="status ghost">Awaiting configuration…</div>
+      </section>
+
+      <section class="card">
+        <div class="section-heading">
+          <h3>Follow & retrieve</h3>
+          <span>Track brew progress or collect</span>
+        </div>
+        <div class="inline-actions">
+          <input id="track-id" type="text" placeholder="Order ID to track" aria-label="Order ID to track">
+          <button id="check-status" class="btn btn-secondary" type="button" disabled>Check status</button>
+          <button id="retrieve-order" class="btn btn-primary" type="button" disabled>Retrieve</button>
+        </div>
+        <div id="status-panel" class="status ghost">No order selected yet.</div>
+        <div class="divider"></div>
+        <div class="board">
+          <div class="inline-actions" style="justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h4>Kitchen board</h4>
+              <span class="meta">Latest orders reported by Servitør</span>
+            </div>
+            <button id="refresh-board" class="btn btn-secondary" type="button" disabled>Refresh</button>
+          </div>
+          <div id="board-list" class="list"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      config: null,
+      lastOrderId: null,
+      productOptions: [],
+      pollInterval: null
+    };
+
+    function buildUrl(path) {
+      if (!state.config) { throw new Error('Config not loaded'); }
+      const base = state.config.apiBaseUrl.replace(/\\/+$/, '');
+      const cleanPath = path.startsWith('/') ? path : '/' + path;
+      return base + cleanPath;
+    }
+
+    function setFeedback(target, message, tone = 'ghost') {
+      target.className = 'status ' + tone;
+      target.textContent = message;
+    }
+
+    function createProductRow(defaultProduct, defaultCount) {
+      const row = document.createElement('div');
+      row.className = 'product-row';
+
+      const select = document.createElement('select');
+      state.productOptions.forEach((item) => {
+        const opt = document.createElement('option');
+        opt.value = item;
+        opt.textContent = item;
+        select.appendChild(opt);
+      });
+      if (defaultProduct) { select.value = defaultProduct; }
+
+      const count = document.createElement('input');
+      count.type = 'number';
+      count.min = '1';
+      count.value = defaultCount || '1';
+
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.innerHTML = '×';
+
+      remove.addEventListener('click', () => {
+        row.remove();
+        ensureRowExists();
+      });
+
+      row.appendChild(select);
+      row.appendChild(count);
+      row.appendChild(remove);
+      return row;
+    }
+
+    function ensureRowExists() {
+      const list = document.getElementById('product-list');
+      if (!list.children.length) {
+        list.appendChild(createProductRow());
+      }
+    }
+
+    function resetForm() {
+      document.getElementById('order-name').value = '';
+      const list = document.getElementById('product-list');
+      list.innerHTML = '';
+      list.appendChild(createProductRow());
+      setFeedback(document.getElementById('order-feedback'), 'Ready for a new order.', 'ghost');
+    }
+
+    async function loadConfig() {
+      const status = document.getElementById('config-status');
+      try {
+        const res = await fetch('config.json');
+        if (!res.ok) { throw new Error('Cannot load config.json'); }
+        const data = await res.json();
+        state.config = data;
+        state.productOptions = data.items || [];
+        status.textContent = 'Menu loaded from config';
+        document.getElementById('submit-order').disabled = false;
+        document.getElementById('check-status').disabled = false;
+        document.getElementById('retrieve-order').disabled = false;
+        document.getElementById('refresh-board').disabled = false;
+        resetForm();
+        refreshBoard();
+      } catch (err) {
+        status.textContent = 'Config failed to load';
+        setFeedback(document.getElementById('order-feedback'), 'Load config.json to continue.', 'error');
+        console.error(err);
+      }
+    }
+
+    async function submitOrder() {
+      const feedback = document.getElementById('order-feedback');
+      setFeedback(feedback, 'Submitting order…', 'ghost');
+      const orderId = document.getElementById('order-name').value.trim();
+      const rows = Array.from(document.querySelectorAll('#product-list .product-row'));
+
+      const coffeeOrder = rows.map((row) => {
+        const product = row.querySelector('select').value;
+        const count = parseInt(row.querySelector('input').value, 10) || 0;
+        return { product, count };
+      }).filter((entry) => entry.count > 0);
+
+      if (!coffeeOrder.length) {
+        setFeedback(feedback, 'Please add at least one product with quantity.', 'error');
+        return;
+      }
+
+      const payload = { coffeeOrder };
+      if (orderId) { payload.orderId = orderId; }
+
+      try {
+        const res = await fetch(buildUrl('/submit-order'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const text = await res.text();
+        if (!res.ok) {
+          setFeedback(feedback, `Order failed: ${text || res.statusText}`, 'error');
+          return;
+        }
+
+        // Try to detect an order id in the response body.
+        let returnedId = text.trim();
+        try {
+          const parsed = JSON.parse(text);
+          returnedId = parsed.orderId || parsed.id || parsed.result || returnedId;
+        } catch (_) {
+          /* keep text body */
+        }
+
+        state.lastOrderId = returnedId;
+        document.getElementById('track-id').value = returnedId;
+        setFeedback(feedback, `Order accepted! ID: ${returnedId}`, 'success');
+        setFeedback(document.getElementById('status-panel'), 'Order created. Use "Check status" to follow it.', 'ghost');
+        refreshBoard();
+      } catch (err) {
+        console.error(err);
+        setFeedback(feedback, 'Network error while submitting. Please try again.', 'error');
+      }
+    }
+
+    async function retrieveOrder() {
+      const orderId = document.getElementById('track-id').value.trim();
+      const panel = document.getElementById('status-panel');
+      if (!orderId) {
+        setFeedback(panel, 'Provide an order ID to retrieve.', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch(buildUrl(`/retrieve-order/${encodeURIComponent(orderId)}`));
+        const bodyText = await res.text();
+        if (res.status === 503) {
+          setFeedback(panel, 'Order is still brewing. Give it a moment.', 'warn');
+          return;
+        }
+        if (res.status === 410) {
+          setFeedback(panel, 'This order was already delivered.', 'warn');
+          return;
+        }
+        if (res.status === 404) {
+          setFeedback(panel, 'Order not found.', 'error');
+          return;
+        }
+        if (!res.ok) {
+          setFeedback(panel, `Retrieve failed: ${res.statusText}`, 'error');
+          return;
+        }
+
+        let info = {};
+        try { info = JSON.parse(bodyText); } catch (_) { /* keep empty */ }
+        const readyText = info.orderReady ? `Ready at ${info.orderReady}` : 'Marked as retrieved.';
+        setFeedback(panel, `Order retrieved! ${readyText}`, 'success');
+        renderTimeline(info);
+      } catch (err) {
+        console.error(err);
+        setFeedback(panel, 'Could not contact Servitør.', 'error');
+      }
+    }
+
+    // Normalize different potential shapes of the /order-list response to an array of orders.
+    function normalizeOrdersList(data) {
+      if (Array.isArray(data)) { return data; }
+      if (data && Array.isArray(data.orders)) { return data.orders; }
+      if (data && typeof data === 'object') {
+        const values = Object.values(data).flat();
+        return values;
+      }
+      return [];
+    }
+
+    function renderTimeline(order) {
+      const panel = document.getElementById('status-panel');
+      if (!order || !order.orderId) {
+        setFeedback(panel, 'No matching order in the system yet.', 'warn');
+        return;
+      }
+
+      const items = [
+        { label: 'Order ID', value: order.orderId },
+        { label: 'Received', value: order.orderReceived },
+        { label: 'Ready', value: order.orderReady || 'Not ready yet' },
+        { label: 'Retrieved', value: order.orderRetrieved || 'Not retrieved yet' },
+        { label: 'Items', value: order.orderSize || '?' },
+        { label: 'Brewed', value: order.orderBrewed != null ? order.orderBrewed : '?' }
+      ];
+
+      panel.className = 'status ghost';
+      panel.innerHTML = '<strong>Status timeline</strong>';
+
+      const wrap = document.createElement('div');
+      wrap.className = 'mini-grid';
+      items.forEach((item) => {
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.innerHTML = '<span style="color: var(--muted);">' + item.label + '</span><span>' + (item.value || '—') + '</span>';
+        wrap.appendChild(chip);
+      });
+
+      panel.appendChild(wrap);
+    }
+
+    async function checkStatus() {
+      const orderId = document.getElementById('track-id').value.trim();
+      if (!orderId) {
+        setFeedback(document.getElementById('status-panel'), 'Provide an order ID to track.', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch(buildUrl('/order-list'));
+        if (!res.ok) { throw new Error(res.statusText); }
+        const data = await res.json();
+        const orders = normalizeOrdersList(data);
+        const match = orders.find((o) => o.orderId === orderId || o.id === orderId);
+        if (!match) {
+          setFeedback(document.getElementById('status-panel'), 'Order not visible yet. Try again shortly.', 'warn');
+          return;
+        }
+        renderTimeline(match);
+      } catch (err) {
+        console.error(err);
+        setFeedback(document.getElementById('status-panel'), 'Could not read order list.', 'error');
+      }
+    }
+
+    async function refreshBoard() {
+      const board = document.getElementById('board-list');
+      board.innerHTML = '<div class="meta">Loading…</div>';
+      try {
+        const res = await fetch(buildUrl('/order-list'));
+        if (!res.ok) { throw new Error(res.statusText); }
+        const data = await res.json();
+        const orders = normalizeOrdersList(data).slice(-5).reverse();
+        if (!orders.length) {
+          board.innerHTML = '<div class="meta">No orders reported yet.</div>';
+          return;
+        }
+        board.innerHTML = '';
+        orders.forEach((o) => {
+          const row = document.createElement('div');
+          row.className = 'row';
+          const status = o.orderRetrieved ? 'Retrieved' : (o.orderReady ? 'Ready' : 'In progress');
+          row.innerHTML = '<div><div class="id">' + (o.orderId || 'Unknown ID') + '</div><div class="meta">Received: ' + (o.orderReceived || '—') + '</div></div><div class="meta">' + status + '</div>';
+          board.appendChild(row);
+        });
+      } catch (err) {
+        console.error(err);
+        board.innerHTML = '<div class="meta">Could not load board.</div>';
+      }
+    }
+
+    function init() {
+      document.getElementById('add-product').addEventListener('click', () => {
+        document.getElementById('product-list').appendChild(createProductRow());
+      });
+      document.getElementById('submit-order').addEventListener('click', submitOrder);
+      document.getElementById('reset-form').addEventListener('click', resetForm);
+      document.getElementById('check-status').addEventListener('click', checkStatus);
+      document.getElementById('retrieve-order').addEventListener('click', retrieveOrder);
+      document.getElementById('refresh-board').addEventListener('click', refreshBoard);
+      ensureRowExists();
+      loadConfig();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
